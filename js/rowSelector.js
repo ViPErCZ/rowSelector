@@ -31,13 +31,13 @@ var rowSelector = function() {
     var tableOpacity = function(plugin) {
         plugin.selector.find("tr").each(function() {
             if (!plugin.line.is(this)) {
-                $(this).css({'opacity' : 0.5});
+                $(this).addClass('transparent_class');
             }
         });
     };
 
     var reset = function(plugin) {
-        plugin.selector.find("tr").css({'opacity' : 1});
+        plugin.selector.find("tr").removeClass('transparent_class');
         plugin.cells.removeClass("activated");
     };
 
@@ -69,6 +69,9 @@ var rowSelector = function() {
         plugin.cells.each(function() {
             $(this).off("click").on("click", function() {
                 if (plugin.state == 0) {
+                    if (plugin.startCell != null) {
+                        reset(plugin);
+                    }
                     plugin.cells.removeClass("activated");
                     plugin.state = 1;
                     plugin.startCell = $(this);
@@ -77,7 +80,9 @@ var rowSelector = function() {
                     tableOpacity(plugin);
                     escapeStopTheSelection(plugin);
                 } else if (plugin.state == 1) {
-                    plugin.state = 0;
+                    if ($(this).closest("tr").css("opacity") == 1) {
+                        plugin.state = 0;
+                    }
                 }
             });
         });
@@ -106,8 +111,8 @@ var rowSelector = function() {
     };
 
     var escapeStopTheSelection = function(plugin) {
-        $(document).keypress(function(event) {
-            console.log(event);
+        plugin.selector.attr("tabindex", 0).css("outline", "none");
+        plugin.selector.off("keydown").on("keydown", function(event) {
             if (event.keyCode == 27) {
                 reset(plugin);
                 plugin.state = 0;
@@ -118,7 +123,6 @@ var rowSelector = function() {
     this.init = function(selector) {
         this.selector = selector;
         this.cells = this.selector.find("td");
-        console.log(this);
         hoverCellAction(this);
         moveCellAction(this);
 

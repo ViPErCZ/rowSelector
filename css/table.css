@@ -1,0 +1,16 @@
+table {
+    width: 600px;
+}
+
+table tr td {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: darkgrey;
+}
+
+table tr td.activated {
+    background-color: antiquewhite;
+}
